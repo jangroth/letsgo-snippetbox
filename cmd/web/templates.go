@@ -3,13 +3,27 @@ package main
 import (
 	"html/template"
 	"path/filepath"
+	"time"
 
 	"github.com/jangroth/snippetbox/internal/models"
 )
 
 type templateData struct {
-	Snippet  *models.Snippet
-	Snippets []*models.Snippet
+	CurrentYear int
+	Snippet     *models.Snippet
+	Snippets    []*models.Snippet
+}
+
+func humanDate(t time.Time) (string, error) {
+	loc, err := time.LoadLocation("Australia/Sydney")
+	if err != nil {
+		return "", err
+	}
+	return t.In(loc).Format("02 Jan 2006 at 15:04"), nil
+}
+
+var functions = template.FuncMap{
+	"humanDate": humanDate,
 }
 
 func newTemplateCache() (map[string]*template.Template, error) {
@@ -23,7 +37,7 @@ func newTemplateCache() (map[string]*template.Template, error) {
 	for _, page := range pages {
 		name := filepath.Base(page)
 
-		ts, err := template.ParseFiles("./ui/html/base.tmpl")
+		ts, err := template.New(name).Funcs(functions).ParseFiles("./ui/html/base.tmpl")
 		if err != nil {
 			return nil, err
 		}
