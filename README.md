@@ -1,6 +1,6 @@
-## Golang Snippetbox
+# Golang Snippetbox
 
-### mysql
+## app start
 
 - Start mysql
 ```
@@ -11,7 +11,16 @@
 ```
 go run ./cmd/web
 ```
+
+## Local dev
+
 - Log into DB
 ```
 mysql -D snippetbox -u web -p
+```
+
+- URLs
+```
+curl -i -X POST "localhost:4000/snippet/create"
+curl -L -i "localhost:4000/snippet/view?id=4"
 ```
